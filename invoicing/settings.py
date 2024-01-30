@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'invoice',
     'crispy_bootstrap5',
-    'bootstrap_datepicker_plus',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'

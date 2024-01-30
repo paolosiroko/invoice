@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+	{% load static %}
 	<head>
 		<meta charset="utf-8" />
 		<title>Invoice</title>
@@ -113,12 +114,12 @@
 						<table>
 
               <tr >
-      					<td><h1>Invoice: {{p_settings.clientName}}</h1></td>
+      					<td><h1>Water Bill : {{p_settings.clientName}}</h1></td>
       				</tr>
 
 							<tr>
 								<td class="title">
-									<img src="https://host.tatiblockchain.co.za/img/skolo_logo.png" style="width: 100%; max-width: 100px" />
+									<img src="{% static 'assets/img/logo.jpeg' %}" style="width: 100%; max-width: 100px" />
 								</td>
 
 								<td>
@@ -179,13 +180,7 @@
 					<td>Total: {{invoiceCurrency}} {{invoiceTotal}}</td>
 				</tr>
 
-        <tr>
-          <td>
-            <p>
-              {{invoice.notes}}
-            </p>
-          </td>
-        </tr>
+     
 
 
 
