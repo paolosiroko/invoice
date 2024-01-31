@@ -49,7 +49,7 @@
                     <th>Date</th>
                     <th>Quantity(Liters)</th>
                     <th>Price(Per Litre)</th>
-                    <th>Related Invoice</th>
+                    <th>Total</th>
 
                   </tr>
                 </thead>
@@ -60,7 +60,7 @@
                   <td>{{product.title}}</td>
                   <td>{{product.quantity}}</td>
                   <td>{{product.currency}} {{product.price}}</td>
-                  <td>{{product.invoice.number}}</td>
+                  <td>{{product.currency}} {{product.total}}</td>
                 </tr>
                   {% endfor %}
 

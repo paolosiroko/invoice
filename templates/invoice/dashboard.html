@@ -18,12 +18,27 @@
 
 
   <div class="container">
+    {% if request.user.is_superuser %}
+            <h1> Earnings  (Litres: Ksh)</h1>
+    {% else  %}
+             <!-- <h1> Spending  (Litres: Ksh)</h1> -->
+    {% endif %}
+    <br>
+
+    <div id="container" style="position: relative; height:45vh; border: 1.2mm ridge #4e6570; border-radius: 30px;" class="align-middle table-bordered">
+        <canvas id="bar-graph"></canvas>
+    </div>
+
+    <br>
+
+    <!-- Loading Chart JS -->
+
     <div class="row">
       <div class="col-lg-6">
         <div class="row">
           <div class="col-lg-12">
 
-            <div class="card mb-5">
+            <div class="card mb-3">
                 <h5 class="card-header">Invoices</h5>
                 <div class="card-body">
                   <h5 class="card-title m-2">Total Number of  Water Bills: {{invoices}}</h5>
@@ -32,7 +47,7 @@
                 </div>
               </div>
               {% if request.user.is_superuser %}
-              <div class="card mb-5">
+              <div class="card mb-3">
                   <h5 class="card-header">Clients</h5>
                   <div class="card-body">
                     <h5 class="card-title m-2">Total Number of Clients: {{clients}}</h5>
@@ -43,17 +58,38 @@
           </div>
         </div>
       </div>
-
-
-      <div class="col-lg-6">
-        <div class="p-5">
-          <img class=img-fluid  src="{% static 'assets/img/logo.jpeg' %}" >
-        </div>
-      </div>
     </div>
   </div>
 
 
+  <script src="{% static 'assets/js/Chart.min.js' %}"></script>
+  <script>
+      Chart.defaults.global.defaultFontColor = '#3c3c3c';
 
+      //configuration for the bar graph
+      var barConfig = {
+          type: 'polarArea',
+          data: {
+              datasets: [{
+                  backgroundColor:[ '#1a79a5','rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(255, 205, 86)'],
+                  label: 'Stock in Inventory',
+                  data: {{ data|safe }},
+              }],
+              labels: {{ labels|safe }}
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+          },
+      };
+
+
+      //runs all charts on loading the webpage
+      window.onload = function() {
+          var ctx = document.getElementById('bar-graph').getContext('2d');
+          window.BarStock = new Chart(ctx, barConfig);
+      };
+
+  </script>
 
 {% endblock %}

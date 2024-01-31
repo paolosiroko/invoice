@@ -98,14 +98,14 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{% url 'dashboard'  %}" class="nav-link active">
+                <a href="{% url 'dashboard'  %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Home</p>
                 </a>
               </li>
               {% if request.user.is_superuser %}
               <li class="nav-item">
-                <a href="{% url 'admin:index'  %}" class="nav-link active">
+                <a href="{% url 'admin:index'  %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Admin Page</p>
                 </a>

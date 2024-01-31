@@ -61,18 +61,21 @@
                             <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto;">
                                 <tbody>
                                     <tr>
-                                        <td class="inner-box" style="width: 40%; font-weight: bold; text-align: center;">Date</td>
+                                        <td class="inner-box" style="width: 30%; font-weight: bold; text-align: center;">Date</td>
                                         <td class="inner-box" style="width: 30%; font-weight: bold; text-align: center;">Quantity</td>
                                         <td class="inner-box" style="width: 20%; font-weight: bold; text-align: center;">Price</td>
+                                        <td class="inner-box" style="width: 40%; font-weight: bold; text-align: center;">Total</td>
                                     </tr>
                                     {% for product in products %}
                                     <tr class="item">
-                                        <td class="inner-box" style="width: 40%; font-weight: italic; text-align: center;">{{product.title}}</td>
+                                        <td class="inner-box" style="width: 30%; font-weight: italic; text-align: center;">{{product.title}}</td>
                                         <td class="inner-box" style="width: 30%; font-weight: italic; text-align: center;">{{product.quantity}}</td>
                                         <td class="inner-box" style="width: 20%; font-weight: italic; text-align: center;">{{product.currency}} {{product.price}}</td>
+                                        <td class="inner-box" style="width: 40%; font-weight: italic; text-align: center;">{{product.currency}} {{product.total}}</td>
                                     </tr>
                                     {% endfor %}
                                     <tr class="total">
+                                        <td></td>
                                         <td></td>
                                         <td class="inner-box" style="width: 40%; font-weight: bold; text-align: center;">Total: </td>
                                         <td class="inner-box" style="width: 40%; font-weight: italic; text-align: center;">{{invoiceCurrency}} {{invoiceTotal}}</td>

@@ -25,7 +25,7 @@ class Client(models.Model):
 
 
     def __str__(self):
-        return '{} {} {}'.format(self.clientName, self.province, self.uniqueId)
+        return '{} {} '.format(self.clientName, self.province)
 
 
     def get_absolute_url(self):
@@ -77,7 +77,7 @@ class Invoice(models.Model):
 
 
     def __str__(self):
-        return '{} {}'.format(self.number, self.uniqueId)
+        return '{} {}'.format(self.number, self.client.clientName)
 
 
     def get_absolute_url(self):
@@ -107,6 +107,7 @@ class Product(models.Model):
     title = models.DateField()
     quantity = models.FloatField(null=True, blank=True)
     price = models.FloatField(null=True, blank=True)
+    total = models.FloatField(null=True, blank=True)
     currency = models.CharField(choices=CURRENCY, default='R', max_length=100)
 
     #Related Fields
@@ -120,7 +121,7 @@ class Product(models.Model):
 
 
     def __str__(self):
-        return '{} {}'.format(self.title, self.uniqueId)
+        return '{}'.format(self.title)
 
 
     def get_absolute_url(self):
@@ -133,6 +134,10 @@ class Product(models.Model):
         if self.uniqueId is None:
             self.uniqueId = str(uuid4()).split('-')[4]
             self.slug = slugify('{} {}'.format(self.title, self.uniqueId))
+
+        if self.quantity is not None and self.price is not None:
+            self.total = self.quantity * self.price
+        super().save(*args, **kwargs)
 
         self.slug = slugify('{} {}'.format(self.title, self.uniqueId))
         self.last_updated = timezone.localtime(timezone.now())

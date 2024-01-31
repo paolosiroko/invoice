@@ -72,12 +72,30 @@ def dashboard(request):
     clients = Client.objects.all().count()
     invoices = Invoice.objects.all().count()
     paidInvoices = Invoice.objects.filter(status='PAID').count()
+    labels = []
+    data = []
+
+    if request.user.is_staff:
+        stockqueryset = Product.objects.all()
+        for item in stockqueryset:
+            labels.append(item.quantity)
+            data.append(item.total)
+           
+    else:
+        stockqueryset = Invoice.objects.filter(client=request.user.client)
+        bills = Invoice.objects.filter(client=request.user.client).count()
+        for item in stockqueryset:
+            labels.append(item.status)
+            data.append(bills)
 
 
-    context = {}
-    context['clients'] = clients
-    context['invoices'] = invoices
-    context['paidInvoices'] = paidInvoices
+    context = {
+        'labels': labels,
+        'data': data,
+        'clients': clients,
+        'invoices': invoices
+     }
+    
     return render(request, 'invoice/dashboard.html', context)
 
 
@@ -85,25 +103,21 @@ def dashboard(request):
 
 @login_required
 def invoices(request):
-    context = {}
     if request.user.is_staff:
         # Admin can see all invoices
         invoices = Invoice.objects.all()
     else:
         # Non-admin user (client) can only see their related invoices
         invoices = Invoice.objects.filter(client=request.user.client)
-    context['invoices'] = invoices
-
-    return render(request, 'invoice/invoices.html', context)
+        
+    return render(request, 'invoice/invoices.html', {'invoices': invoices})
 
 
 @login_required
 def products(request):
-    context = {}
     products = Product.objects.all()
-    context['products'] = products
 
-    return render(request, 'invoice/products.html', context)
+    return render(request, 'invoice/products.html', {'products': products})
 
 
 
@@ -250,167 +264,7 @@ def viewPDFInvoice(request, slug):
             invoiceTotal += y
             invoiceCurrency = x.currency
 
-
-
-    context = {}
-    context['invoice'] = invoice
-    context['products'] = products
-    context['invoiceTotal'] = "{:.2f}".format(invoiceTotal)
-    context['invoiceCurrency'] = invoiceCurrency
-
-    return render(request, 'invoice/water-bill.html', context)
-
-
-
-def viewDocumentInvoice(request, slug):
-    #fetch that invoice
-    try:
-        invoice = Invoice.objects.get(slug=slug)
-        pass
-    except:
-        messages.error(request, 'Something went wrong')
-        return redirect('invoices')
-
-    #fetch all the products - related to this invoice
-    products = Product.objects.filter(invoice=invoice)
-
-    #Get Client Settings
-    # p_settings = Settings.objects.get(clientName=invoice.client)
-
-    #Calculate the Invoice Total
-    invoiceTotal = 0.0
-    if len(products) > 0:
-        for x in products:
-            y = float(x.quantity) * float(x.price)
-            invoiceTotal += y
-
-
-
-    context = {}
-    context['invoice'] = invoice
-    context['products'] = products
-    # context['p_settings'] = p_settings
-    context['invoiceTotal'] = "{:.2f}".format(invoiceTotal)
-
-    #The name of your PDF file
-    filename = '{}.pdf'.format(invoice.uniqueId)
-
-    #HTML FIle to be converted to PDF - inside your Django directory
-    template = get_template('invoice/pdf-template.html')
-
-
-    #Render the HTML
-    html = template.render(context)
-
-    #Options - Very Important [Don't forget this]
-    options = {
-          'encoding': 'UTF-8',
-          'javascript-delay':'10', #Optional
-          'enable-local-file-access': None, #To be able to access CSS
-          'page-size': 'A4',
-          'custom-header' : [
-              ('Accept-Encoding', 'gzip')
-          ],
-      }
-      #Javascript delay is optional
-
-    #Remember that location to wkhtmltopdf
-    config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
-
-    #IF you have CSS to add to template
-    css1 = os.path.join(settings.CSS_LOCATION, 'assets', 'css', 'bootstrap.min.css')
-    css2 = os.path.join(settings.CSS_LOCATION, 'assets', 'css', 'dashboard.css')
-
-    #Create the file
-    file_content = pdfkit.from_string(html, False, configuration=config, options=options)
-
-    #Create the HTTP Response
-    response = HttpResponse(file_content, content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename = {}'.format(filename)
-
-    #Return
-    return response
-
-
-def emailDocumentInvoice(request, slug):
-    #fetch that invoice
-    try:
-        invoice = Invoice.objects.get(slug=slug)
-        pass
-    except:
-        messages.error(request, 'Something went wrong')
-        return redirect('invoices')
-
-    #fetch all the products - related to this invoice
-    products = Product.objects.filter(invoice=invoice)
-
-    #Get Client Settings
-    p_settings = Settings.objects.get(clientName='Skolo Online Learning')
-
-    #Calculate the Invoice Total
-    invoiceTotal = 0.0
-    if len(products) > 0:
-        for x in products:
-            y = float(x.quantity) * float(x.price)
-            invoiceTotal += y
-
-
-
-    context = {}
-    context['invoice'] = invoice
-    context['products'] = products
-    context['p_settings'] = p_settings
-    context['invoiceTotal'] = "{:.2f}".format(invoiceTotal)
-
-    #The name of your PDF file
-    filename = '{}.pdf'.format(invoice.uniqueId)
-
-    #HTML FIle to be converted to PDF - inside your Django directory
-    template = get_template('invoice/pdf-template.html')
-
-
-    #Render the HTML
-    html = template.render(context)
-
-    #Options - Very Important [Don't forget this]
-    options = {
-          'encoding': 'UTF-8',
-          'javascript-delay':'1000', #Optional
-          'enable-local-file-access': None, #To be able to access CSS
-          'page-size': 'A4',
-          'custom-header' : [
-              ('Accept-Encoding', 'gzip')
-          ],
-      }
-      #Javascript delay is optional
-
-    #Remember that location to wkhtmltopdf
-    config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
-
-    #Saving the File
-    filepath = os.path.join(settings.MEDIA_ROOT, 'client_invoices')
-    os.makedirs(filepath, exist_ok=True)
-    pdf_save_path = filepath+filename
-    #Save the PDF
-    pdfkit.from_string(html, pdf_save_path, configuration=config, options=options)
-
-
-    #send the emails to client
-    to_email = invoice.client.emailAddress
-    from_client = p_settings.clientName
-    emailInvoiceClient(to_email, from_client, pdf_save_path)
-
-    invoice.status = 'EMAIL_SENT'
-    invoice.save()
-
-    #Email was send, redirect back to view - invoice
-    messages.success(request, "Email sent to the client succesfully")
-    return redirect('create-build-invoice', slug=slug)
-
-
-
-
-
+    return render(request, 'invoice/water-bill.html', {'invoice':invoice,'products': products,'invoiceTotal':"{:.2f}".format(invoiceTotal), 'invoiceCurrency': invoiceCurrency })
 
 
 

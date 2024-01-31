@@ -18,7 +18,4 @@ path('invoices/delete/<slug:slug>',views.deleteInvoice, name='delete-invoice'),
 
 #PDF and EMAIL Paths
 path('invoices/view-pdf/<slug:slug>',views.viewPDFInvoice, name='view-pdf-invoice'),
-path('invoices/view-document/<slug:slug>',views.viewDocumentInvoice, name='view-document-invoice'),
-path('invoices/email-document/<slug:slug>',views.emailDocumentInvoice, name='email-document-invoice'),
-
 ]
