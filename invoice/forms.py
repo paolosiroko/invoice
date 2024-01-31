@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import widgets
 from .models import *
@@ -26,12 +27,26 @@ class UserLoginForm(forms.ModelForm):
         model=User
         fields=['username','password']
 
+class UserForm(UserCreationForm):
+    email = forms.EmailField()
 
+    class Meta():
+        model = User
+        fields = ('username','first_name','last_name', 'email', 'password1', 'password2')
+
+        # widgets = {
+        # "password":"forms.PasswordInput()",
+        # }
+
+        labels = {
+        'password1':'Password',
+        'password2':'Confirm Password'
+        }
 
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ['clientName', 'addressLine1', 'province', 'phoneNumber', 'emailAddress','houseNumber','meterNumber','taxNumber']
+        fields = ['clientName', 'addressLine1', 'province', 'phoneNumber','houseNumber','meterNumber','taxNumber']
         labels = {
             'addressLine1': 'Address',
             'province': 'County',

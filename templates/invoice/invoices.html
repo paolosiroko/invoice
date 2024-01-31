@@ -14,11 +14,13 @@
 
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Billing Invoices</h1>
+    {% if request.user.is_superuser %}
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2">
-        <a href="{% url 'create-invoice' %}"><button type="button" class="btn btn-primary">Add New Invoice</button></a>
+        <a href="{% url 'create-invoice' %}"><button type="button" class="btn btn-primary">Add New Bill</button></a>
       </div>
     </div>
+    {% endif %}
   </div>
 
   <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
@@ -35,7 +37,9 @@
           <th>Phone Number</th>
           <th>Due Date</th>
           <th>Invoice Status</th>
+          {% if request.user.is_superuser %}
           <th>Delete</th>
+          {% endif %}
           <th>View</th>
         </tr>
       </thead>
@@ -50,9 +54,11 @@
         <td>{{invoice.client.phoneNumber}}</td>
         <td>{{invoice.dueDate}}</td>
         <td>{{invoice.status}}</td>
+        {% if request.user.is_superuser %}
         <td>
           <a href="{% url 'delete-invoice' invoice.slug %}"><button class="btn btn-danger"> DELETE </button></a>
         </td>
+        {% endif %}
         <td>
           <a href="{% url 'create-build-invoice' invoice.slug %}"><button class="btn btn-primary"> VIEW </button></a>
         </td>
@@ -68,8 +74,8 @@
 
     </div>
     <div class="col-lg-8">
-      <h3>Start by Adding First Invoice</h3>
-      <img class=img-fluid src="{% static 'assets/img/empty.svg' %}" alt="Skolo Online Learning">
+      <h3>Start by Adding First Water Bill Invoice</h3>
+      <!-- <img class=img-fluid src="{% static 'assets/img/water.jpeg' %}" > -->
     </div>
     <div class="col-lg-3">
 

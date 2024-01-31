@@ -14,11 +14,13 @@
 
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Clients</h1>
+    {% if request.user.is_superuser %}
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2">
         <button href="#addClientModal" type="button" class="btn btn-primary" data-bs-toggle="modal">Add New Client</button>
       </div>
     </div>
+    {% endif %}
   </div>
 
   <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
@@ -57,7 +59,7 @@
     </div>
     <div class="col-lg-8">
       <h3>Add First Client</h3>
-      <img class=img-fluid  src="{% static 'assets/img/empty.svg' %}" alt="Skolo Online Learning">
+      <!-- <img class=img-fluid  src="{% static 'assets/img/empty.svg' %}" > -->
     </div>
     <div class="col-lg-3">
 
@@ -83,10 +85,11 @@
       </div>
 
       <div class="modal-body py-0">
-
-
+        
+        
         {{form|crispy}}
-
+        <p><strong> --------- User Account  ---------</strong></p>
+        {{ user_form|crispy }}
 
       </div>
       <div class="modal-footer flex-column border-top-0">

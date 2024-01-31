@@ -86,7 +86,12 @@ def dashboard(request):
 @login_required
 def invoices(request):
     context = {}
-    invoices = Invoice.objects.all()
+    if request.user.is_staff:
+        # Admin can see all invoices
+        invoices = Invoice.objects.all()
+    else:
+        # Non-admin user (client) can only see their related invoices
+        invoices = Invoice.objects.filter(client=request.user.client)
     context['invoices'] = invoices
 
     return render(request, 'invoice/invoices.html', context)
@@ -104,29 +109,40 @@ def products(request):
 
 @login_required
 def clients(request):
-    context = {}
     clients = Client.objects.all()
-    context['clients'] = clients
 
     if request.method == 'GET':
         form = ClientForm()
-        context['form'] = form
-        return render(request, 'invoice/clients.html', context)
+        user_form = UserForm()
+        return render(request, 'invoice/clients.html', {'clients': clients,'form':form, 'user_form': user_form})
 
     if request.method == 'POST':
+        user_form = UserForm(data=request.POST)
         form = ClientForm(request.POST, request.FILES)
 
-        if form.is_valid():
-            form.save()
+        
+
+        if user_form.is_valid() and form.is_valid():
+            user = user_form.save()
+            user.save()
+
+            profile = form.save(commit=False)
+            profile.user = user
+            profile.save()
 
             messages.success(request, 'New Client Added')
             return redirect('clients')
         else:
             messages.error(request, 'Problem processing your request')
             return redirect('clients')
+    else:
+        user_form = UserForm()
+        form = ClientForm()
 
 
-    return render(request, 'invoice/clients.html', context)
+    return render(request, 'invoice/clients.html', {'clients': clients,
+                             'user_form':user_form,
+                             'form':form})
 
 
 

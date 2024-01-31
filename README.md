@@ -3,8 +3,6 @@ You need to install the following packages before running the code:
 ```sh
 pip install django
 
-pip install Pillow
-
 pip install uuid
 
 pip install requests
