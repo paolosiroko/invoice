@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>Invoice</title>
-
+		<link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
 		<style>
 			.invoice-box {
 				max-width: 800px;
@@ -101,10 +101,11 @@
 	</head>
 
 
-
-
-	<body>
-		<div class="invoice-box">
+	<body id="printArea">
+		<div class="wrapper m-4">
+			<button class="center btn btn-outline-primary" onclick="printpage('printArea')">Print</button>
+		</div>
+		<div  class="invoice-box">
 
 
 
@@ -136,13 +137,7 @@
 					<td colspan="2">
 						<table>
 							<tr>
-								<td>
-									{{p_settings.clientName}}<br />
-									{{p_settings.addressLine1}}<br />
-									{{p_settings.province}}, {{p_settings.postalCode}} <br/ >
-                  {{p_settings.emailAddress}} <br/ >
-                  {{p_settings.phoneNumber}}
-								</td>
+		
 
 								<td>
                   {{invoice.client.clientName}}<br />
@@ -189,5 +184,16 @@
 
 
 		</div>
+		
+
+    <script>
+        function printpage(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }       
+        </script>
 	</body>
 </html>

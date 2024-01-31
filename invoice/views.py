@@ -258,7 +258,7 @@ def viewPDFInvoice(request, slug):
     context['invoiceTotal'] = "{:.2f}".format(invoiceTotal)
     context['invoiceCurrency'] = invoiceCurrency
 
-    return render(request, 'invoice/invoice-template.html', context)
+    return render(request, 'invoice/water-bill.html', context)
 
 
 
