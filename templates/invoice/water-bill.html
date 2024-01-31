@@ -67,11 +67,16 @@
                                     </tr>
                                     {% for product in products %}
                                     <tr class="item">
-                                        <td class="inner-box" style="width: 40%; font-weight: bold; text-align: center;">{{product.title}}</td>
-                                        <td class="inner-box" style="width: 30%; font-weight: bold; text-align: center;">{{product.quantity}}</td>
-                                        <td class="inner-box" style="width: 20%; font-weight: bold; text-align: center;">{{product.currency}} {{product.price}}</td>
+                                        <td class="inner-box" style="width: 40%; font-weight: italic; text-align: center;">{{product.title}}</td>
+                                        <td class="inner-box" style="width: 30%; font-weight: italic; text-align: center;">{{product.quantity}}</td>
+                                        <td class="inner-box" style="width: 20%; font-weight: italic; text-align: center;">{{product.currency}} {{product.price}}</td>
                                     </tr>
                                     {% endfor %}
+                                    <tr class="total">
+                                        <td></td>
+                                        <td class="inner-box" style="width: 40%; font-weight: bold; text-align: center;">Total: </td>
+                                        <td class="inner-box" style="width: 40%; font-weight: italic; text-align: center;">{{invoiceCurrency}} {{invoiceTotal}}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                             </td>
