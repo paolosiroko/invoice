@@ -15,7 +15,12 @@
 
 
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    
+    {% if request.user.is_superuser %}
     <h1 class="h2">Create a Water Bill </h1>
+    {% else  %}
+    <h1 class="h2">Water Bills </h1>
+    {% endif %}
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2">
         <a href="{% url 'invoices' %}"><button type="button" class="btn btn-primary">Go Back</button></a>
