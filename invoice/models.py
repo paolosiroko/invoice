@@ -77,7 +77,7 @@ class Invoice(models.Model):
 
 
     def __str__(self):
-        return '{} {}'.format(self.number, self.client.clientName)
+        return '{} {}'.format(self.number, self.status)
 
 
     def get_absolute_url(self):

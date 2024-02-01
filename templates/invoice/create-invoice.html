@@ -41,8 +41,8 @@
         <div class="row">
           <div class="col-lg-12">
             {% if request.user.is_superuser %}
-            <h5 class="card-title">Add Todays Meter Reading to your Bill
-              <button href="#addProductModal" type="button" class="btn btn-outline-success" data-bs-toggle="modal"> Add Meter Reading </button>
+            <h5 class="card-title">To Add Todays Meter Reading select a client First
+              <button href="#addProductModal" id="id_client" type="button" class="btn btn-outline-success" onclick="return validateClientSelection();" data-bs-toggle="modal"> Add Meter Reading </button>
             </h5>
             {% endif %}
             {% if products|length > 0 %}
@@ -95,13 +95,12 @@
             {% if request.user.is_superuser %}
             <h5 class="card-title"> Select Client to Add </h5>
             <br>
-            <h5 class="card-title"> Current Client: <span class="badge bg-success">{{invoice.client.clientName}}</span> </h5>
+            <h5 class="card-title"> Current Client: <span class="badge bg-success"> {{invoice.client.clientName}}</span> </h5>
             <br>
 
             <div class="mb-5">
               <form class="" action="#" method="post">
                 {% csrf_token %}
-
                 {{client_form|crispy}}
 
                 <button type="submit" class="btn btn-primary">ADD CLIENT</button>
@@ -135,7 +134,7 @@
     <div class="modal-dialog">
       <div class="modal-content rounded-6 shadow">
 
-        <form class="" action="#" method="post" enctype="multipart/form-data">
+        <form class="" action="#"  method="post" enctype="multipart/form-data">
           {% csrf_token %}
 
 
@@ -158,5 +157,16 @@
       </div>
     </div>
   </div>
+  <script>
+
+    function validateClientSelection() {
+      document.addEventListener("DOMContentLoaded", function () {
+        var currentClient = "{{invoice.client.clientName}}";
+        if (!currentClient) {
+          alert("Please select a client first.");
+        }
+      });
+    }
+  </script>
 
 {% endblock %}
